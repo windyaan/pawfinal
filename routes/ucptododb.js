@@ -1,62 +1,55 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../db'); // Sesuaikan dengan path ke database Anda
+const db = require('../database/db'); // Sesuaikan dengan path ke database Anda
 
-// Endpoint untuk menambahkan produk baru
+// Menggunakan router.get dan router.post
+router.get('/', (req, res) => {  
+    db.query('SELECT * FROM pesan', (err, pesan) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send('Internal Server Error');
+        }
+        res.render('pesan', {
+            layout: 'layouts/main-layout',
+            pesan: pesan // Kirim data 'pesan' ke view pesan.ejs
+        });
+    });
+});
+
+// Route untuk menambahkan pesan baru
 router.post('/', (req, res) => {
-    const { namapaket, stok, harga } = req.body;
-    if (!namapaket || namapaket.trim() === '') {
-        return res.status(400).send('Nama paket tidak boleh kosong');
-    }
-    if (stok < 0 || harga < 0) {
-        return res.status(400).send('Stok dan harga harus lebih besar atau sama dengan 0');
-    }
+    const { namapaket, jumlah, nama, notelp } = req.body;
 
-    db.query('INSERT INTO produk (namapaket, stok, harga) VALUES (?, ?, ?)', [namapaket.trim(), stok, harga], (err, results) => {
-        if (err) return res.status(500).send('Internal Server Error');
-        const newProduct = { id: results.insertId, namapaket: namapaket.trim(), stok, harga };
-        res.status(201).json(newProduct);
-    });
-});
-
-// Endpoint untuk mendapatkan semua produk
-router.get('/', (req, res) => {
-    db.query('SELECT * FROM produk', (err, results) => {
-        if (err) return res.status(500).send('Internal Server Error');
-        res.json(results);
-    });
-});
-
-// Endpoint untuk mendapatkan produk berdasarkan ID
-router.get('/:id', (req, res) => {
-    db.query('SELECT * FROM produk WHERE id = ?', [req.params.id], (err, results) => {
-        if (err) return res.status(500).send('Internal Server Error');
-        if (results.length === 0) return res.status(404).send('Produk tidak ditemukan');
-        res.json(results[0]);
-    });
-});
-
-// Endpoint untuk memperbarui produk
-router.put('/:id', (req, res) => {
-    const { namapaket, stok, harga } = req.body;
-
-    if (stok < 0 || harga < 0) {
-        return res.status(400).send('Stok dan harga harus lebih besar atau sama dengan 0');
+    // Validasi input
+    if (!namapaket || !jumlah || !nama || !notelp) {
+        return res.status(400).send('namapaket, jumlah, nama, dan notelp tidak boleh kosong');
     }
 
-    db.query('UPDATE produk SET namapaket = ?, stok = ?, harga = ? WHERE id = ?', [namapaket, stok, harga, req.params.id], (err, results) => {
-        if (err) return res.status(500).send('Internal Server Error');
-        if (results.affectedRows === 0) return res.status(404).send('Produk tidak ditemukan');
-        res.json({ id: req.params.id, namapaket, stok, harga });
+    const query = 'INSERT INTO pesan (namapaket, jumlah, nama, notelp) VALUES (?, ?, ?, ?)';
+
+    db.query(query, [namapaket, jumlah, nama, notelp], (err, result) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send('Error adding message');
+        }
+        res.status(201).json({ id: result.insertId, namapaket, jumlah, nama, notelp }); // Send the newly created message
     });
 });
 
-// Endpoint untuk menghapus produk
+// Route untuk menghapus pesan berdasarkan ID
 router.delete('/:id', (req, res) => {
-    db.query('DELETE FROM produk WHERE id = ?', [req.params.id], (err, results) => {
-        if (err) return res.status(500).send('Internal Server Error');
-        if (results.affectedRows === 0) return res.status(404).send('Produk tidak ditemukan');
-        res.status(204).send();
+    const pesanId = req.params.id;
+    const query = 'DELETE FROM pesan WHERE id = ?';
+
+    db.query(query, [pesanId], (err, result) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send('Error deleting message');
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).send('Message not found');
+        }
+        res.status(200).send('Message deleted');
     });
 });
 

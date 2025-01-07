@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Produk</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container mt-5">
+    <h1 class="text-center">Daftar Produk</h1>
+
+    <ul id="produkList" class="list-group">
+        <% produk.forEach(produk => { %>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>
+                    <strong><%= produk.namapaket %></strong> - Stok: <%= produk.stok %> - Harga: <%= produk.harga %>
+                </span>
+            </li>
+        <% }); %>
+    </ul>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+<script>
+$(document).ready(function () {
+    // Menampilkan produk dari server (diambil dari database)
+    $.ajax({
+        url: '/produk', // Endpoint untuk mengambil data produk
+        type: 'GET',
+        success: function (produkList) {
+            // Menampilkan produk pada daftar
+            produkList.forEach(produk => {
+                $('#produkList').append(
+                    `<li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                            <strong>${produk.namapaket}</strong> - Stok: ${produk.stok} - Harga: ${produk.harga}
+                        </span>
+                    </li>`
+                );
+            });
+        },
+        error: function (error) {
+            console.error("Error fetching produk:", error.responseText);
+        }
+    });
+});
+</script>
+</body>
+</html>
