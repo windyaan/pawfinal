@@ -71,6 +71,21 @@ app.get('/menu', isAuthenticated, (req, res) => {
     });
 });
 
+app.get('/pesanan', isAuthenticated, (req, res) => {
+    const query = 'SELECT nama, namapaket, notelp, jumlah FROM pesan';
+    db.query(query, (err, results) => {
+        if (err) {
+            res.status(500).send('Error fetching menu');
+            return;
+        }
+        // Render halaman menu dan kirim data produk ke view menu.ejs
+        res.render('pesanan', {
+            layout: 'layouts/main-layout',
+            pesan: results // Kirim data produk ke halaman menu.ejs
+        });
+    });
+});
+
 
 app.get('/produk',isAuthenticated,(req,res)=>{
     res.render('produk', {
