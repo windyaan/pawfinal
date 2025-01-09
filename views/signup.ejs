@@ -19,6 +19,7 @@
       text-align: center;
     "
   >
+    <!-- Logo -->
     <img
       src="https://st.depositphotos.com/18879306/60933/v/450/depositphotos_609336790-stock-illustration-initials-letter-wedding-monogram-logos.jpg"
       alt="Logo"
@@ -28,6 +29,8 @@
         border-radius: 50%;
       "
     />
+
+    <!-- Title -->
     <h2
       style="
         margin: 0;
@@ -38,11 +41,36 @@
     >
       Sign Up
     </h2>
-    <p style="color: #666; font-size: 14px;">
-      Silahkan Daftarkan Akun Anda
-    </p>
+    <p style="color: #666; font-size: 14px;">Silahkan Daftarkan Akun Anda</p>
 
-    <form action="/login" method="POST" style="margin-top: 20px;">
+    <!-- Display Error Message -->
+    <% if (typeof error !== 'undefined') { %>
+      <p
+        style="
+          color: red;
+          font-size: 14px;
+          margin: 10px 0;
+        "
+      >
+        <%= error %>
+      </p>
+    <% } %>
+
+    <!-- Display Success Message -->
+    <% if (typeof success !== 'undefined') { %>
+      <p
+        style="
+          color: green;
+          font-size: 14px;
+          margin: 10px 0;
+        "
+      >
+        <%= success %>
+      </p>
+    <% } %>
+
+    <!-- Signup Form -->
+    <form action="/signup" method="POST" style="margin-top: 20px;">
       <input
         type="text"
         name="username"
@@ -90,6 +118,7 @@
       </button>
     </form>
 
+    <!-- Redirect to Login -->
     <p style="margin-top: 15px; font-size: 14px; color: #666;">
       Sudah Memiliki Akun?
       <a href="/login" style="color: #007bff; text-decoration: none;">Login</a>
