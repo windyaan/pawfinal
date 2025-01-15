@@ -18,7 +18,9 @@ const session = require('express-session');
 
 // Mengimpor middleware
 const authRoutes = require('./routes/authRoutes');
-const { isAuthenticated } = require('./middlewares/middleware.js');
+const { isAuthenticated, isUser, isAdmin } = require('./middlewares/middleware.js');
+const cors = require('cors');
+app.use(cors());
 
 app.use(expressLayouts);
 app.use(express.json());
@@ -27,67 +29,36 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/pesan', ucptododb)
 app.use('/produk', produk)
 app.use('/menu', menu)
-
+app.use("/", authRoutes); // Rute otentikasi
 
 app.set('view engine','ejs');
 app.use(express.urlencoded({ extended: true }));
 
-// Menambahkan routes
-app.use("/", authRoutes); // Rute otentikasi
-
-app.use('/', authRoutes);
-// Konfigurasi express-session
-app.use(session({
-    secret: process.env.SESSION_SECRET || 'your_secret_key', 
-    resave: false,
-    saveUninitialized: false,
-    cookie: { secure: false } // Set ke true jika menggunakan HTTPS
-}));
-
-app.get('/',isAuthenticated,(req, res) => {  // kalo mau ke index harus login dulu 
+app.get('/',(req, res) => {  // kalo mau ke index harus login dulu 
     res.render('index', {
         layout: 'layouts/main-layout'
     });
 });
 
-app.get('/pesan',isAuthenticated,(req,res)=>{
+app.get('/',(req,res)=>{
     res.render('pesan', {
         layout: 'layouts/main-layout'
     });
 });
 
-app.get('/menu', isAuthenticated, (req, res) => {
-    const query = 'SELECT namapaket, stok, harga FROM produk';
-    db.query(query, (err, results) => {
-        if (err) {
-            res.status(500).send('Error fetching menu');
-            return;
-        }
-        // Render halaman menu dan kirim data produk ke view menu.ejs
-        res.render('menu', {
-            layout: 'layouts/main-layout',
-            produk: results // Kirim data produk ke halaman menu.ejs
-        });
+app.get('/menu',(req,res)=>{
+    res.render('menu', {
+        layout: 'layouts/main-layout'
     });
 });
 
-app.get('/pesanan', isAuthenticated, (req, res) => {
-    const query = 'SELECT nama, namapaket, notelp, jumlah FROM pesan';
-    db.query(query, (err, results) => {
-        if (err) {
-            res.status(500).send('Error fetching menu');
-            return;
-        }
-        // Render halaman pesanan dan kirim data pesan ke view pesanan.ejs
-        res.render('pesanan', {
-            layout: 'layouts/main-layout',
-            pesan: results // Kirim data pesan ke halaman pesanan.ejs
-        });
+app.get('/pesanan',(req,res)=>{
+    res.render('pesanan', {
+        layout: 'layouts/main-layout'
     });
 });
 
-
-app.get('/produk',isAuthenticated,(req,res)=>{
+app.get('/produk',(req,res)=>{
     res.render('produk', {
         layout: 'layouts/main-layout'
     });

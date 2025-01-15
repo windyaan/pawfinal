@@ -5,7 +5,7 @@ const db = require("../database/db");
 
 // Middleware untuk memeriksa role "user"
 function isUser(req, res, next) {
-  if (req.session.role !== "user") {
+  if (req.session.role !== "pelanggan") {
     return res.status(403).send("Access denied. This page is for users only.");
   }
   next();
