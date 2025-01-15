@@ -22,7 +22,7 @@ const { isAuthenticated } = require('./middlewares/middleware.js');
 
 app.use(expressLayouts);
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/pesan', ucptododb)
 app.use('/produk', produk)
@@ -78,10 +78,10 @@ app.get('/pesanan', isAuthenticated, (req, res) => {
             res.status(500).send('Error fetching menu');
             return;
         }
-        // Render halaman menu dan kirim data produk ke view menu.ejs
+        // Render halaman pesanan dan kirim data pesan ke view pesanan.ejs
         res.render('pesanan', {
             layout: 'layouts/main-layout',
-            pesan: results // Kirim data produk ke halaman menu.ejs
+            pesan: results // Kirim data pesan ke halaman pesanan.ejs
         });
     });
 });

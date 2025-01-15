@@ -14,12 +14,16 @@
     <ul class="list-group">
         <% pesan.forEach(p => { %>
             <li class="list-group-item d-flex justify-content-between align-items-center">
-                <span>
-                    <strong><%= p.nama %><strong><%= p.namapaket %></strong> - Jumlah: <%= p.jumlah %> - notelp: <%= p.notelp %>
-                </span>
+                <div>
+                    <h5 class="mb-1"><strong>Nama: <%= p.nama %></strong></h5>
+                    <p class="mb-1 text-muted">Nama Paket: <%= p.namapaket %></p>
+                    <p class="mb-1 text-muted">Jumlah: <%= p.jumlah %></p>
+                    <p class="mb-0 text-muted">No Telp: <%= p.notelp %></p>
+                </div>
             </li>
         <% }); %>
     </ul>
+    
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
