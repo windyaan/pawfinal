@@ -62,21 +62,21 @@ router.get('/:id', (req, res) => {
 
 // Route untuk menambahkan produk baru
 router.post('/', (req, res) => {
-    const { namapaket, stok, harga } = req.body;
+    const { namapaket, stok, harga, images } = req.body;
 
     // Validasi input
-    if (!namapaket || !stok || !harga) {
-        return res.status(400).send('namapaket, stok, harga tidak boleh kosong');
+    if (!namapaket || !stok || !harga || !images) {
+        return res.status(400).send('namapaket, stok, harga, images tidak boleh kosong');
     }
 
-    const query = 'INSERT INTO produk (namapaket, stok, harga) VALUES (?, ?, ?)';
+    const query = 'INSERT INTO produk (namapaket, stok, harga, images) VALUES (?, ?, ?, ?)';
 
-    db.query(query, [namapaket, stok, harga], (err, result) => {
+    db.query(query, [namapaket, stok, harga, images], (err, result) => {
         if (err) {
             console.error(err);
             return res.status(500).send('Error adding message');
         }
-        res.status(201).json({ id: result.insertId, namapaket, stok, harga}); // Send the newly created message
+        res.status(201).json({ id: result.insertId, namapaket, stok, harga, images}); // Send the newly created message
     });
 });
 
