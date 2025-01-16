@@ -9,6 +9,9 @@
                     <p class="mb-1 text-muted">Stok: <%= p.stok %></p>
                     <p class="mb-0 text-muted">Harga: Rp <%= p.harga.toLocaleString() %></p>
                 </div>
+                <div>
+                    <img src="/<%= p.image %>" alt="<%= p.namapaket %>" class="img-thumbnail" style="width: 100px; height: auto;">
+                </div>
             </li>
         <% }); %>
     </ul>

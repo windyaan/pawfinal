@@ -98,27 +98,45 @@ app.get('/produk', isAuthenticated, (req, res) => {
     });
 });
 
-// Konfigurasi Multer untuk menangani upload file (gambar)
+// Set storage engine
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) { // Tempat penyimpanan file yang diupload
-      cb(null, "public/images"); // Menyimpan file di folder public/images
-    },
-    filename: function (req, file, cb) { // Menetapkan nama file yang diupload
-      cb(null, file.originalname); // Menggunakan nama file asli
-    },
-  });
-  
-// Filter untuk menerima hanya gambar dengan format tertentu
-const fileFilter = (req, file, cb) => {
-    const allowedTypes = ["image/jpeg", "image/jpg", "image/png"]; // Jenis file yang diperbolehkan
-    if (allowedTypes.includes(file.mimetype)) { // Cek tipe MIME file
-      cb(null, true); // Terima file jika sesuai
-    } else {
-      cb(new Error("Hanya gambar yang diperbolehkan"), false); // Tolak file selain gambar
+    destination: './public/uploads/',
+    filename: (req, file, cb) => {
+        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
     }
-};
-  
-const upload = multer({ storage, fileFilter }); // Membuat instance multer dengan konfigurasi yang telah ditetapkan
+});
+
+// Initialize upload
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 1000000 }, // Limit 1MB
+    fileFilter: (req, file, cb) => {
+        const fileTypes = /jpeg|jpg|png|gif/;
+        const extName = fileTypes.test(path.extname(file.originalname).toLowerCase());
+        const mimeType = fileTypes.test(file.mimetype);
+
+        if (extName && mimeType) {
+            cb(null, true);
+        } else {
+            cb('Error: Images Only!');
+        }
+    }
+}).single('image');
+
+// Set public folder
+app.use('/uploads', express.static('public/uploads'));
+
+// Example route for form upload
+app.post('/upload', (req, res) => {
+    upload(req, res, (err) => {
+        if (err) {
+            res.status(400).send(err);
+        } else {
+            res.send('File uploaded!');
+        }
+    });
+});
+
 
 // Menjalankan server pada port yang telah ditentukan
 app.listen(port, () => {
