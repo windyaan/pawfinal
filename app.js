@@ -23,7 +23,7 @@ const { isAuthenticated } = require('./middlewares/middleware.js');
 // Middleware untuk menggunakan layout EJS, parsing JSON, dan melayani file statis
 app.use(expressLayouts); // Menggunakan express-ejs-layouts untuk layout EJS
 app.use(express.json()); // Middleware untuk parsing JSON
-app.use(express.static(path.join(__dirname, 'public'))); // Middleware untuk melayani file statis dari folder public
+app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads'))); // Atur public/uploads sebagai direktori statis
 
 // Menggunakan rute yang telah didefinisikan
 app.use('/pesan', ucptododb); // Rute untuk ucptododb

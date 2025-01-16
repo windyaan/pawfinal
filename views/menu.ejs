@@ -10,7 +10,13 @@
                     <p class="mb-0 text-muted">Harga: Rp <%= p.harga.toLocaleString() %></p>
                 </div>
                 <div>
-                    <img src="/<%= p.image %>" alt="<%= p.namapaket %>" class="img-thumbnail" style="width: 100px; height: auto;">
+                    <img 
+                        src="/<%= p.images || 'images/default.jpg' %>" 
+                        alt="<%= p.namapaket %>" 
+                        class="img-thumbnail" 
+                        style="width: 100px; height: auto;"
+                        onerror="this.src='/images/default.jpg';"
+                    >
                 </div>
             </li>
         <% }); %>
@@ -20,6 +26,3 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
-
-</body>
-</html>

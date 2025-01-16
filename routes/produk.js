@@ -1,6 +1,39 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../database/db'); // Mengimpor koneksi database
+const multer = require('multer');
+const path = require('path');
+
+// Konfigurasi penyimpanan gambar
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'public/uploads'); // Folder untuk menyimpan gambar
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Nama file unik
+  }
+});
+
+const upload = multer({ storage });
+
+// Rute GET untuk endpoint '/produk' yang akan menampilkan daftar produk
+router.get('/produk', (req, res) => {
+    // Query SQL untuk mengambil semua data dari tabel 'produk'
+    const sql = 'SELECT * FROM produk';
+    // Eksekusi query ke database
+    db.query(sql, (err, results) => {
+        // Jika terjadi error saat query, log error di console dan kirimkan respons 500 ke klien
+        if (err) {
+            console.error(err); // Debugging: Tampilkan error di console
+            return res.status(500).send('Terjadi kesalahan'); // Respons 500 dengan pesan error
+        }
+        // Debugging: Tampilkan hasil query di console untuk memastikan data yang diambil benar
+        console.log(results);
+        // Kirimkan data hasil query ke template 'produk.ejs' untuk dirender sebagai halaman HTML
+        res.render('produk', { produk: results });
+    });
+});
+
 
 // Endpoint untuk mendapatkan semua produk
 router.get('/', (req, res) => {
