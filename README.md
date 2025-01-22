@@ -1,7 +1,7 @@
 nama kelompok
 1. Tiara Hasna Nabila (004)
 2. Nadila Zaskia (012)
-3. Amanda Anggraeni (138)
+3. Amanda Anggraeni (038)
 4. Windya Nurmaretha (039)
    
 usecase
