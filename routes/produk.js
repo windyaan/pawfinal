@@ -94,14 +94,17 @@ router.put('/:id', (req, res) => {
     if (harga !== undefined && (typeof harga !== 'number' || harga < 0)) {
         return res.status(400).send('Harga harus berupa angka positif');
     }
+    if (images !== undefined && (typeof images !== 'String' || images < 0)) {
+        return res.status(400).send('Foto harus diisi');
+    }
 
     db.query(
         'UPDATE produk SET namapaket = COALESCE(?, namapaket), stok = COALESCE(?, stok), harga = COALESCE(?, harga) WHERE id = ?',
-        [namapaket?.trim() || null, stok || null, harga || null, req.params.id],
+        [namapaket?.trim() || null, stok || null, harga || null, images || null, req.params.id],
         (err, results) => {
             if (err) return res.status(500).send('Internal Server Error');
             if (results.affectedRows === 0) return res.status(404).send('Produk tidak ditemukan');
-            res.json({ id: req.params.id, namapaket, stok, harga });
+            res.json({ id: req.params.id, namapaket, stok, harga, images });
         }
     );
 });
@@ -116,3 +119,4 @@ router.delete('/:id', (req, res) => {
 });
 
 module.exports = router;
+

@@ -23,7 +23,7 @@
             <li class="list-group-item d-flex justify-content-between align-items-center">
                 <span>
                     <strong><%= produk.namapaket %></strong> - Stok: <%= produk.stok %> - Harga: <%= produk.harga %> - Foto: <%= produk.images %>
-                    <img src="<%= produk.images %>" alt="Gambar Produk" style="width: 50px; height: 50px; object-fit: cover; margin-left: 10px;">
+                <img src="<%= produk.images %>" alt="Gambar Produk" style="width: 50px; height: 50px; object-fit: cover; margin-left: 10px;">
                 </span>
                 <div>
                     <button class="btn btn-sm btn-success mr-2 editBtn" data-id="<%= produk.id %>">Edit</button>
@@ -56,7 +56,7 @@
                             <input type="number" id="editProdukHarga" class="form-control" required>
                         </div>
                         <div class="form-group mt-2">
-                            <label for="editProdukFoto">Harga</label>
+                            <label for="editProdukFoto">Foto</label>
                             <input type="file" id="editProdukFoto" class="form-control" required>
                         </div>
                         <button type="submit" id="saveChangesButton" class="btn btn-primary mt-3">Simpan Perubahan</button>
@@ -130,9 +130,11 @@ $(document).ready(function () {
         const namapaket = currentProduk[0].trim();
         const stok = currentProduk[1].split(': ')[1].trim();
         const harga = currentProduk[2].split(': ')[1].trim();
+        const images = currentProduk[3].split(': ')[1].trim();
         $('#editProdukName').val(namapaket);
         $('#editProdukStok').val(stok);
         $('#editProdukHarga').val(harga);
+        $('#editProdukFoto').val(images);
         $('#editModal').modal('show');
     });
 
@@ -142,11 +144,12 @@ $(document).ready(function () {
         const namapaket = $('#editProdukName').val().trim();
         const stok = $('#editProdukStok').val().trim();
         const harga = $('#editProdukHarga').val().trim();
-        if (namapaket && stok && harga) {
+        const images = $('#editProdukFoto').val().trim();
+        if (namapaket && stok && harga && images) {
             $.ajax({
                 url: '/produk/' + editId,
                 type: 'PUT',
-                data: JSON.stringify({ namapaket: namapaket, stok: stok, harga: harga }),
+                data: JSON.stringify({ namapaket: namapaket, stok: stok, harga: harga, images: images }),
                 contentType: 'application/json',
                 success: function () {
                     // Update the list item with new values

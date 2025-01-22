@@ -2,15 +2,6 @@ const express = require('express');
 const router = express.Router();
 const db = require('../database/db'); // Mengimpor koneksi database
 
-// Contoh route
-app.get('/menu', (req, res) => {
-    const produk = [
-        { namapaket: 'Paket A', stok: 10, harga: 50000, image: 'images/buketboneka.jpg' },
-        { namapaket: 'Paket B', stok: 5, harga: 75000, image: '' } // Tanpa gambar
-    ];
-    res.render('menu', { produk });
-  });
-
 // Endpoint untuk mendapatkan semua produk dan menampilkan di halaman menu
 router.get('/', (req, res) => {
     db.query('SELECT * FROM produk', (err, produk) => {
